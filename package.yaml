@@ -1,0 +1,90 @@
+name:                serverless-haskell
+version:             0.1.0.0
+github:              "Github username here/serverless-haskell"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "Author email here"
+copyright:           "2019 Author name here"
+
+extra-source-files: []
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            App category here
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/Github username here/serverless-haskell#readme>
+
+dependencies:
+- safe
+- base >= 4.7 && < 5
+- lens
+- aws-lambda-haskell-runtime >= 4.0.0
+- aeson
+- text
+- amazonka
+- amazonka-core
+- amazonka-dynamodb
+- exceptions
+- unordered-containers
+- conduit 
+- fast-logger
+- binary
+
+default-extensions:
+- RecordWildCards
+- OverloadedLists
+- OverloadedStrings
+- DeriveGeneric
+
+library:
+  source-dirs: src
+
+executables:
+  serverless-haskell-get-exe:
+    main:                Main.hs
+    source-dirs:         app/get
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - serverless-haskell
+  serverless-haskell-create-exe:
+    main:                Main.hs
+    source-dirs:         app/create
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - serverless-haskell
+  serverless-haskell-delete-exe:
+    main:                Main.hs
+    source-dirs:         app/delete
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - serverless-haskell
+  serverless-haskell-list-exe:
+    main:                Main.hs
+    source-dirs:         app/list
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - serverless-haskell
+  serverless-haskell-update-exe:
+    main:                Main.hs
+    source-dirs:         app/update
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - serverless-haskell       

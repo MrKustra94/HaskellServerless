@@ -1,0 +1,8 @@
+.stack-work/
+docker
+
+export_envs.sh
+.gitignore
+stack.yaml.lock
+serverless-haskell.cabal
+README.md

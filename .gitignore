@@ -1,0 +1,5 @@
+.stack-work/
+.serverless
+serverless-haskell.cabal
+*~
+stack.yaml.lock

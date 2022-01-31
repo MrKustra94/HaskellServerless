@@ -1,0 +1,102 @@
+service: haskell-serverless
+
+provider:
+  name: aws
+  region: eu-central-1
+  profile: serverless-admin
+  timeout: 10
+  memorySize: 512
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  ecr:
+    # In this section you can define images that will be built locally and uploaded to ECR
+    images:
+      haskell-serverless-create-dynamo:
+        path: ./
+        buildArgs:
+          EXECUTABLE_NAME: "serverless-haskell-create-exe"
+          AWS_REGISTRY: ${env:AWS_REGISTRY}
+      haskell-serverless-get-dynamo:
+        path: ./
+        buildArgs:
+          EXECUTABLE_NAME: "serverless-haskell-get-exe"
+          AWS_REGISTRY: ${env:AWS_REGISTRY}
+      haskell-serverless-delete-dynamo:
+        path: ./
+        buildArgs:
+          EXECUTABLE_NAME: "serverless-haskell-delete-exe"
+          AWS_REGISTRY: ${env:AWS_REGISTRY}
+      haskell-serverless-list-dynamo:
+        path: ./
+        buildArgs:
+          EXECUTABLE_NAME: "serverless-haskell-list-exe"
+          AWS_REGISTRY: ${env:AWS_REGISTRY}
+      haskell-serverless-update-dynamo:
+        path: ./
+        buildArgs:
+          EXECUTABLE_NAME: "serverless-haskell-update-exe"
+          AWS_REGISTRY: ${env:AWS_REGISTRY}           
+  iamRoleStatements: 
+  - Effect: Allow
+    Action:
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  haskell-serverless-get:
+    image:
+      name: haskell-serverless-get-dynamo
+    events:
+    - http:
+        path: todos/{id}
+        method: get
+  haskell-serverless-create:
+    image:
+      name: haskell-serverless-create-dynamo
+    events:
+    - http:
+        path: todos
+        method: post
+  haskell-serverless-delete:
+    image:
+      name: haskell-serverless-delete-dynamo
+    events:
+    - http:
+        path: todos/{id}
+        method: delete
+  haskell-serverless-list:
+    image:
+      name: haskell-serverless-list-dynamo
+    events:
+    - http:
+        path: todos
+        method: get
+  haskell-serverless-update:
+    image:
+      name: haskell-serverless-update-dynamo
+    events:
+    - http:
+        path: todos/{id}
+        method: put                 
+
+resources:
+  Resources: 
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S 
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1    
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
